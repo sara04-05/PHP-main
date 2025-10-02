@@ -10,7 +10,7 @@
 		$username = $_POST['username'];
 		$email = $_POST['email'];
 		$tempPass = $_POST['password'];
-		$password = password_hash($tempPass, PASSWORD_DEFAULT);
+		$password = password_hash($tempPass, PASSWORD_DEFAULT); 
 
 		if(empty($name) || empty($surname) || empty($username) || empty($email) || empty($password))
 		{
