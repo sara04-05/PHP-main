@@ -1,11 +1,11 @@
 -- phpMyAdmin SQL Dump
--- version 5.2.0
+-- version 5.2.1
 -- https://www.phpmyadmin.net/
 --
 -- Host: 127.0.0.1
--- Generation Time: Jan 11, 2023 at 11:44 AM
--- Server version: 10.4.25-MariaDB
--- PHP Version: 7.4.30
+-- Generation Time: Sep 16, 2025 at 05:42 PM
+-- Server version: 10.4.32-MariaDB
+-- PHP Version: 8.2.12
 
 SET SQL_MODE = "NO_AUTO_VALUE_ON_ZERO";
 START TRANSACTION;
@@ -28,21 +28,22 @@ SET time_zone = "+00:00";
 --
 
 CREATE TABLE `users` (
-  `id` int(11) NOT NULL,
-  `username` varchar(250) NOT NULL,
+  `id` int(6) NOT NULL,
   `name` varchar(250) NOT NULL,
   `surname` varchar(250) NOT NULL,
-  `email` varchar(250) NOT NULL,
-  `password` varchar(25) NOT NULL
-) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4;
+  `email` varchar(250) NOT NULL
+) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
 --
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `name`, `surname`, `email`, `password`) VALUES
-(1, 'johndoe', 'John', 'Doe', 'johndoe@email.com', '1234'),
-(2, 'janedoe', 'Jane', 'Doe', 'janedoe@email.com', '1234');
+INSERT INTO `users` (`id`, `name`, `surname`, `email`) VALUES
+(1, 'John', 'Doe', 'johndoe@email.com'),
+(2, 'Jane', 'Doe', 'janedoe@gmail.com'),
+(3, 'Sara', 'Simnica', 'sara@gmail.com'),
+(4, 'test', 'test', 'test@gmail.com'),
+(36, 'test1', 'testi1', 'test@gmai.com');
 
 --
 -- Indexes for dumped tables
@@ -62,7 +63,7 @@ ALTER TABLE `users`
 -- AUTO_INCREMENT for table `users`
 --
 ALTER TABLE `users`
-  MODIFY `id` int(11) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=27;
+  MODIFY `id` int(6) NOT NULL AUTO_INCREMENT, AUTO_INCREMENT=37;
 COMMIT;
 
 /*!40101 SET CHARACTER_SET_CLIENT=@OLD_CHARACTER_SET_CLIENT */;

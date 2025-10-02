@@ -4,24 +4,33 @@ require 'config.php';
 
 if(isset($_POST['submit']))
 {
-  $email = $_POST['email'];
+  $username = $_POST['username'];
+  $password = $_POST['password'];
 
-  if(empty($email))
+  if(empty($username) || empty($password))
   {
-    echo "Fill the email field!";
+    echo "Fill all the fields!";
     header( "refresh:2; url=login.php" ); 
   }else{
-    $sql = "SELECT * FROM users WHERE email=:email";
+    $sql = "SELECT * FROM users WHERE username=:username";
     $insertSql = $conn->prepare($sql);
-    $insertSql->bindParam(':email', $email);
+    $insertSql->bindParam(':username', $username);
 
     $insertSql->execute();
     
     if($insertSql->rowCount() > 0) { 
         $data = $insertSql->fetch();
-        $_SESSION['email'] = $data['email'];
-        header("Location: dashboard.php");
-        exit; 
+
+        if($password == $data['password']){
+          $_SESSION['username'] = $data['username'];
+          header("Location: dashboard.php");
+          exit; 
+        } else {
+         
+          echo "Password incorrect";
+          header("refresh:2; url=login.php"); 
+          exit; 
+        }
     } else {
         echo "User not found!";
         header("refresh:2; url=login.php"); 
@@ -30,4 +39,6 @@ if(isset($_POST['submit']))
   }
 }
 ?>
+
+
 

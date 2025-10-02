@@ -29,10 +29,8 @@ SET time_zone = "+00:00";
 
 CREATE TABLE `users` (
   `id` int(6) NOT NULL,
-  `username` varchar(250) NOT NULL,
   `name` varchar(250) NOT NULL,
   `surname` varchar(250) NOT NULL,
-  `password` varchar(250) NOT NULL,
   `email` varchar(250) NOT NULL
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci;
 
@@ -40,12 +38,12 @@ CREATE TABLE `users` (
 -- Dumping data for table `users`
 --
 
-INSERT INTO `users` (`id`, `username`, `name`, `surname`, `password`, `email`) VALUES
-(1, 'johndoe', 'John', 'Doe', 'password1', 'johndoe@email.com'),
-(2, 'janedoe', 'Jane', 'Doe', 'password2', 'janedoe@gmail.com'),
-(3, 'sarasim', 'Sara', 'Simnica', 'password3', 'sara@gmail.com'),
-(4, 'testuser', 'test', 'test', 'testpass', 'test@gmail.com'),
-(36, 'test1user', 'test1', 'testi1', 'test1pass', 'test@gmai.com');
+INSERT INTO `users` (`id`, `name`, `surname`, `email`) VALUES
+(1, 'John', 'Doe', 'johndoe@email.com'),
+(2, 'Jane', 'Doe', 'janedoe@gmail.com'),
+(3, 'Sara', 'Simnica', 'sara@gmail.com'),
+(4, 'test', 'test', 'test@gmail.com'),
+(36, 'test1', 'testi1', 'test@gmai.com');
 
 --
 -- Indexes for dumped tables
