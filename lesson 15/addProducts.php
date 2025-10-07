@@ -24,6 +24,8 @@
         echo "Products have been added successfully ...<br>";
 	}
 ?>
+<?php include("header.php"); ?>
+
 
 <div class="signup">
         
@@ -40,8 +42,7 @@
 
         <label for="inputQuantity" class="sr-only">Quantity</label>
         <input type="number" id="inputQuantity" class="form-control" placeholder="Quantity" name="quantity" required autofocus>
-        
-        <label for="inputPrice" class="sr-only">Price</label>
+<label for="inputPrice" class="sr-only">Price</label>
         <input type="number" id="inputPrice" class="form-control" placeholder="Price" name="price" required autofocus>
 
 

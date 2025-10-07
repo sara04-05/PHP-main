@@ -1,6 +1,5 @@
 <?php 
 
-// Include the database connection file
 include_once('config.php');
 
 if(isset($_POST['update']))
@@ -8,14 +7,13 @@ if(isset($_POST['update']))
     $title = $_POST['title'];
     $description = $_POST['description'];
     $quantity = $_POST['quantity'];
-    $price = $_POST['price']; // Fixed missing semicolon
-    $id = $_POST['id']; // Get product id from form
+    $price = $_POST['price']; 
+    $id = $_POST['id']; 
 
     if(empty($title) || empty($description) || empty($quantity) || empty($price) || empty($id))
     {
         echo "You need to fill all the fields.";
-        header( "refresh:2; url=products.php" ); // Redirect to products.php for consistency
-    }
+        header( "refresh:2; url=products.php" ); 
     else
     {
         $sql= "UPDATE products SET title=:title, description=:description, quantity=:quantity, price=:price WHERE id=:id";
@@ -26,11 +24,12 @@ if(isset($_POST['update']))
         $updateSql->bindParam(':description', $description);
         $updateSql->bindParam(':quantity', $quantity);
         $updateSql->bindParam(':price', $price);
-        $updateSql->bindParam(':id', $id); // Bind the id parameter
+        $updateSql->bindParam(':id', $id); 
 
         $updateSql->execute();
 
-        header('Location: products.php');
+        header('Location: productsDashboard.php');
+    }
     }
 }
 ?>

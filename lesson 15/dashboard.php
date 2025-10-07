@@ -5,7 +5,7 @@
 	{
 		header('Location:login.php');
 	}
-  $sql = "SELECT * FROM products";
+  $sql = "SELECT * FROM users";
   $selectUsers = $conn->prepare($sql);
   $selectUsers->execute();
 
@@ -59,9 +59,9 @@
             </a>
           </li>
           <li class="nav-item">
-          <?php foreach ($products_data as $products_data) { ?>
+          <?php foreach ($users_data as $user_data) { ?>
 
-            <a class="nav-link" href="profile.php?id=<?= $products_data['id'];?>">
+            <a class="nav-link" href="profile.php?id=<?= $user_data['id'];?>">
             <?php  } ?>
               <span data-feather="file"></span>
               Edit Profile
@@ -81,37 +81,36 @@
 
         include_once('config.php');
 
-        $getUsers = $conn->prepare("SELECT * FROM products");
+        $getUsers = $conn->prepare("SELECT * FROM users");
 
         $getUsers->execute();
 
         $users = $getUsers->fetchAll();
 
         ?>
-                <a href="addProducts.php" id=product>Add Product</a>
 
         <table>
           <thead>
             <tr>
               <th>ID</th>
-              <th>Title</th>
-              <th>Description</th>
-              <th>Quantity</th>
-              <th>Price</th>
+              <th>Username</th>
+              <th>Name</th>
+              <th>Surname</th>
+              <th>Email</th>
               <th>Update</th>
             </tr>
           </thead>
           <?php
-            foreach ($products as $product ) {
+            foreach ($users as $user ) {
           ?>
           <tbody>
             <tr> 
-              <td> <?= $product['id'] ?> </td>
-              <td> <?= $product['title'] ?> </td>
-              <td> <?= $product['description']  ?> </td> 
-              <td> <?= $product['quantity']  ?> </td> 
-              <td> <?= $product['price']/100  ?>$ </td>
-              <td> <?= "<a href='delete.php?id=$product[id]'> Delete</a>| <a href='product.php?id=$product[id]'> Update </a>"?></td>
+              <td> <?= $user['id'] ?> </td>
+              <td> <?= $user['username'] ?> </td>
+              <td> <?= $user['name']  ?> </td> 
+              <td> <?= $user['surname']  ?> </td> 
+              <td> <?= $user['email']  ?> </td>
+              <td> <?= "<a href='delete.php?id=$user[id]'> Delete</a>| <a href='profile.php?id=$user[id]'> Update </a>"?></td>
             </tr>
           
             <?php 
@@ -122,7 +121,6 @@
       </div>
     </main>
   </div>
-
 </div>
 
 <?php include("footer.php"); ?>
