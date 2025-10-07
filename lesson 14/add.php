@@ -7,14 +7,16 @@
 		$name = $_POST['name'];
 		$surname = $_POST['surname'];
 		$email = $_POST['email'];
+        $password=$_POST['password']
 
 		
-        $sql = "insert into users (name, surname, email) values (:name, :surname, :email)";
+        $sql = "insert into users (name, surname, email,password) values (:name, :surname, :email, :password)";
         $sqlQuery = $conn->prepare($sql);
     
         $sqlQuery->bindParam(':name', $name); 
         $sqlQuery->bindParam(':surname', $surname); 
         $sqlQuery->bindParam(':email', $email);
+        $sqlQuery->bindParam(':password', $password);
 
         $sqlQuery->execute();
 
@@ -33,6 +35,7 @@
         <input type="text" name="name" placeholder="Name"></br>
         <input type="text" name="surname" placeholder="Surname"></br>
         <input type="email" name="email" placeholder="Email"></br>
+        <input type="password" name="password" placeholder="Password"></br>
         <button type="submit" name="submit">Add</button>
     </form>
 </body>

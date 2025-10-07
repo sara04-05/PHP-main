@@ -41,8 +41,7 @@ CREATE TABLE `users` (
 --
 
 INSERT INTO `users` (`id`, `name`, `surname`, `username`, `email`, `password`) VALUES
-(1, 'John', 'Doe', 'johndoe', 'johndoe@mail.com', '$2y$10$4kAii3oJMFLZnyy5Jdfj5OAsMPaRcj4Or8F/4XXdccuC329YkuLaG'),
-(2, 'Jane', 'Doe', 'janedoe', 'janedoe@mail.com', '$2y$10$JzYz38MXRWUcrpOOgh61VefY0Mx/4gPUOiSndmYS5mD5VNZ4wOacm');
+
 
 --
 -- Indexes for dumped tables

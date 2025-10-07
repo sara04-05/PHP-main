@@ -18,17 +18,24 @@ if(isset($_POST['submit']))
 
     $insertSql->execute();
     
-    if($insertSql->rowCount() > 0) {
-        $data=$insertSql->fetch();
-        if(password_verify($password,$data['password'])){
-          $_SESSION['username']=$data['username'];
-          header("Location: dashboard.php");
-        }else{
-          echo "Password incorrect";
-          header( "refresh:2; url=login.php" );
-        }
+    if ($insertSql->rowCount() > 0) {
+    $data = $insertSql->fetch();
+    if ($password === $data['password']) {
+        $_SESSION['username'] = $data['username'];
+        header("Location: dashboard.php");
+        exit();
     } else {
-        echo "User not found!!";
+        echo "Password incorrect";
+        header("refresh:2; url=login.php");
+        exit();
     }
-  }
+} else {
+    echo "User not found!!";
+    header("refresh:2; url=login.php");
+    exit();
 }
+
+ }
+  }
+?>
+

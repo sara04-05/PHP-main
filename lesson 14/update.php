@@ -9,8 +9,8 @@
 		$surname = $_POST['surname'];
 		$username = $_POST['username'];
 		$email = $_POST['email'];
-		$tempPass = $_POST['password'];
-		$password = password_hash($tempPass, PASSWORD_DEFAULT);
+		$$password = $_POST['password'];
+		
 
 		if(empty($name) || empty($surname) || empty($username) || empty($email) || empty($password))
 		{
