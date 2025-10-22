@@ -1,23 +1,19 @@
 <style>
 		
-  table
-  {
-    border: 1px solid black;
-  }
+*{
+    margin: 0px;
+    padding: 0px;
+    box-sizing: border-box;
+}
 
-  tr,td,th
-  {
-    border: 1px solid black;
-    
-  }
-  table,tr,td
-  {
-    border-collapse: collapse;
-  }
-  td
-  {
-    padding: 10px;
-  }
+
+body{
+    margin: 0;
+
+}
+
+background-image: url(pics/bg.png);
+
 
 </style>
 
@@ -29,7 +25,8 @@
     <title>Document</title>
 </head>
 <body>
-      <section class="section2">
+    
+      <section class="section1">
         <div class="SignUp">
             <div class="intro">
                <p class="Sign">Log In to <br><p class="brand" >Sara's Digital Library</p></p><br>
