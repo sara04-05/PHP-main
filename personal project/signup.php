@@ -22,7 +22,7 @@ body {
     padding: 2rem;
 }
 
-.login {
+.SignUp {
     background: rgba(255, 255, 255, 0.1); 
     backdrop-filter: blur(15px);           
     -webkit-backdrop-filter: blur(15px);   
@@ -74,7 +74,8 @@ label {
 }
 
 input[type="email"],
-input[type="password"] {
+input[type="password"]
+{
     padding: 0.75rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -82,7 +83,36 @@ input[type="password"] {
     color: #f1f1f1;
     font-size: 1rem;
     outline: none;
+
 }
+input[type='name'],
+input[type='surname'] {
+    padding: 10px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #f1f1f1;
+    font-size: 1rem;
+    outline: none;
+}
+
+.name-row {
+  display: flex;
+  gap: 3px; 
+}
+
+.name-row input {
+  flex: 1; 
+  width: 100%; 
+  border-radius: 6px;
+  border: 1px solid rgba(255, 255, 255, 0.2);
+  background-color: rgba(0, 0, 0, 0.4);
+  color: #f1f1f1;
+  font-size: 0.9rem;
+  outline: none;
+}
+
+
 
 input::placeholder {
     color: #bbb;
@@ -177,11 +207,28 @@ function validation() {
 <body>
     
       <section class="section2">
-        <div class="login">
+        <div class="SignUp">
             <div class="intro">
                 <p class="detail">Please enter your email address to continue</p>
+        <div class="name-row">
+                  <form class="forma" onsubmit="return validation()">
+                    <label for="name">Name</label>
+                    <input type="name" id="name" placeholder="yourname" required>
+                    <span id="email_error">Please enter a valid name</span>
 
-                <form class="forma" onsubmit="return validation()" action="loginLogic.php" method="post">
+                    
+                </form><br>
+                
+                  <form class="forma" onsubmit="return validation()">
+                    <label for="surname">Surname</label>
+                    <input type="surname" id="surname" placeholder="yoursurname" required>
+                    <span id="email_error">Please enter a valid surname</span>
+
+                    
+                </form><br>
+                </div>
+
+                <form class="forma" onsubmit="return validation()">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" placeholder="your@email.com" required>
                     <span id="email_error">Please enter a valid email</span>
@@ -189,7 +236,7 @@ function validation() {
                     
                 </form><br>
                 
-                <form class="forma" onsubmit="return validation()" id="password-container" action="loginLogic.php" method="post">
+                <form class="forma" onsubmit="return validation()" id="password-container">
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="yourpassword" required>
                     <span id="password_error">Please enter a valid password</span>
@@ -198,7 +245,6 @@ function validation() {
                 </form>
             </div><br>
 
-            <p>Don't have an account? Sign up to <a href="signup.php">LetterDash</a></p>
         </div>
     </section>
 </body>
