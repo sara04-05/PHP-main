@@ -1,3 +1,16 @@
+<?php 
+include_once('config.php');
+    if(isset($_POST['submit']))
+    {
+        
+        $name = $_POST['name'];
+        $surname = $_POST['surname'];
+        $email = $_POST['email'];
+        $password = $_POST['password'];}
+?>
+
+
+
 <style>
 		
 * {
@@ -28,7 +41,7 @@ body {
     -webkit-backdrop-filter: blur(15px);   
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    padding: 3rem 2rem;
+    padding: 1.2rem 2rem;
     width: 100%;
     max-width: 400px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -146,11 +159,12 @@ a {
     color: #ffffffff;
     text-align: center;
 }
+p {
+    color: #ffffffff;
+    text-align: center;
+    font-size: 0.9rem;  }
 
-p{
-color: #000000ff;
 
-}
 </style>
 
 
@@ -209,9 +223,8 @@ function validation() {
       <section class="section2">
         <div class="SignUp">
             <div class="intro">
-                <p class="detail">Please enter your email address to continue</p>
         <div class="name-row">
-                  <form class="forma" onsubmit="return validation()">
+                  <form class="forma" onsubmit="return validation()" action="register.php" method="post">
                     <label for="name">Name</label>
                     <input type="name" id="name" placeholder="yourname" required>
                     <span id="email_error">Please enter a valid name</span>
@@ -219,7 +232,7 @@ function validation() {
                     
                 </form><br>
                 
-                  <form class="forma" onsubmit="return validation()">
+                  <form class="forma" onsubmit="return validation()" action="register.php" method="post">
                     <label for="surname">Surname</label>
                     <input type="surname" id="surname" placeholder="yoursurname" required>
                     <span id="email_error">Please enter a valid surname</span>
@@ -228,7 +241,7 @@ function validation() {
                 </form><br>
                 </div>
 
-                <form class="forma" onsubmit="return validation()">
+                <form class="forma" onsubmit="return validation()" action="register.php" method="post">
                     <label for="email">Email Address</label>
                     <input type="email" id="email" placeholder="your@email.com" required>
                     <span id="email_error">Please enter a valid email</span>
@@ -236,7 +249,7 @@ function validation() {
                     
                 </form><br>
                 
-                <form class="forma" onsubmit="return validation()" id="password-container">
+                <form class="forma" onsubmit="return validation()" id="password-container" action="register.php" method="post">
                     <label for="password">Password</label>
                     <input type="password" id="password" placeholder="yourpassword" required>
                     <span id="password_error">Please enter a valid password</span>
@@ -244,8 +257,10 @@ function validation() {
                     <button type="submit">Continue</button>
                 </form>
             </div><br>
+                <p>Log in to <a href="login.php">LetterDash</a></p>
 
         </div>
+
     </section>
 </body>
 </html>

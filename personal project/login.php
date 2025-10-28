@@ -1,5 +1,26 @@
+<?php
+$images = [
+    "pics/brain.png",
+    "pics/dolphin.png",
+    "pics/elephant.png",
+    "pics/monkey.png",
+    "pics/octo.png",
+    "pics/raven.png",
+];
+
+$randomImage = $images[array_rand($images)];
+
+include_once('config.php'); 
+
+?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Document</title>
+
 <style>
-		
 * {
     margin: 0px;
     padding: 0px;
@@ -23,12 +44,12 @@ body {
 }
 
 .login {
+    padding: 1.2rem 2rem;
     background: rgba(255, 255, 255, 0.1); 
     backdrop-filter: blur(15px);           
     -webkit-backdrop-filter: blur(15px);   
     border: 1px solid rgba(255, 255, 255, 0.2);
     border-radius: 12px;
-    padding: 3rem 2rem;
     width: 100%;
     max-width: 400px;
     box-shadow: 0 10px 25px rgba(0, 0, 0, 0.4);
@@ -36,9 +57,11 @@ body {
 
 .logo {
     display: block;
-    margin: 0 auto 1.5rem;
-    max-width: 130px;
+    width: 200px;
+    height: 140px;
+    margin: 0 auto 0.5rem; 
     border-radius: 50%;
+    object-fit: cover; 
 }
 
 .Sign {
@@ -52,6 +75,7 @@ body {
 .brand {
     color: #1db954;
 }
+
 
 .detail {
     text-align: center;
@@ -116,18 +140,14 @@ a {
     color: #ffffffff;
     text-align: center;
 }
-
-p{
-color: #000000ff;
-
-}
-</style>
-
+p {
+    color: #ffffffff;
+    text-align: center;
+    font-size: 0.9rem;  }
 
 </style>
 
 <script>
-
 function validation() {
  var email=document.getElementById('email').value;
  valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
@@ -159,47 +179,32 @@ function validation() {
             document.getElementById('password').style.borderColor="black";
             return true;    
         }}
-
-
-
-
-    
 </script>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 </head>
 <body>
-    
-      <section class="section2">
-        <div class="login">
-            <div class="intro">
-                <p class="detail">Please enter your email address to continue</p>
 
-                <form class="forma" onsubmit="return validation()" action="loginLogic.php" method="post">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="your@email.com" required>
-                    <span id="email_error">Please enter a valid email</span>
+<section class="section2">
+    <div class="login">
+        <div class="intro">
+            <div class="img"><img src="<?php echo $randomImage; ?>" alt="Random Image" class="logo"></div>
 
-                    
-                </form><br>
-                
-                <form class="forma" onsubmit="return validation()" id="password-container" action="loginLogic.php" method="post">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="yourpassword" required>
-                    <span id="password_error">Please enter a valid password</span>
+            <!-- Single form with proper name attributes and submit button -->
+            <form class="forma" onsubmit="return validation()" action="loginlogic.php" method="post">
+                <label for="email">Email Address</label>
+                <input type="email" id="email" name="email" placeholder="your@email.com" required>
+                <span id="email_error">Please enter a valid email</span>
 
-                    <button type="submit">Continue</button>
-                </form>
-            </div><br>
+                <label for="password" style="margin-top:0.75rem;">Password</label>
+                <input type="password" id="password" name="password" placeholder="yourpassword" required>
+                <span id="password_error">Please enter a valid password</span>
 
-            <p>Don't have an account? Sign up to <a href="signup.php">LetterDash</a></p>
-        </div>
-    </section>
+                <button type="submit" name="submit" style="margin-top:0.75rem;">Continue</button>
+            </form>
+
+        </div><br>
+        
+        <p>Don't have an account? Sign up to <a href="signupp.php">LetterDash</a></p>
+    </div>
+</section>
 </body>
 </html>
