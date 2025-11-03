@@ -9,10 +9,10 @@
 
 body{
     margin: 0;
+    background-image:url(pics/bg.png);
 
 }
 
-background-image: url(pics/bg.png);
 
 
 </style>
