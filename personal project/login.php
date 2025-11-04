@@ -32,6 +32,8 @@ body {
     background-image: url(pics/bg.png);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     font-family: Arial, sans-serif;
 }
 
@@ -148,37 +150,37 @@ p {
 </style>
 
 <script>
-function validation() {
- var email=document.getElementById('email').value;
- valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    function validation() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var emailError = document.getElementById('email_error');
+        var passwordError = document.getElementById('password_error');
+        
+        var valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var valid_password_regex = /^[A-Za-z0-9]{8,}$/;
+        
+        var isValid = true;
 
- var password = document.getElementById('password').value;
- valid_password_regex= /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-    if (!(email.match(valid_email_regex)) || !(password.match(valid_password_regex))) {
-         if (!(email.match(valid_email_regex))) {
-            document.getElementById('email_error').style.visibility="visible";
-            document.getElementById('email').style.borderColor="red";
-        }else{
-            document.getElementById('email_error').style.visibility="hidden";
-            document.getElementById('email').style.borderColor="black";
-        }
-         if (!(password.match(valid_password_regex))) {
-            document.getElementById('password_error').style.visibility="visible";
-            document.getElementById('password').style.borderColor="red";
-        }else{
-            document.getElementById('password_error').style.visibility="hidden";
-            document.getElementById('password').style.borderColor="black";
+        if (!valid_email_regex.test(email)) {
+            emailError.style.display = "block";
+            document.getElementById('email').style.borderColor = "#ff3333";
+            isValid = false;
+        } else {
+            emailError.style.display = "none";
+            document.getElementById('email').style.borderColor = "rgba(255, 255, 255, 0.2)";
         }
 
-         return false;
-        }else{
-            document.getElementById('email_error').style.visibility="hidden";
-            document.getElementById('email').style.borderColor="black";
-            document.getElementById('password_error').style.visibility="hidden";
-            document.getElementById('password').style.borderColor="black";
-            return true;    
-        }}
+        if (!valid_password_regex.test(password)) {
+            passwordError.style.display = "block";
+            document.getElementById('password').style.borderColor = "#ff3333";
+            isValid = false;
+        } else {
+            passwordError.style.display = "none";
+            document.getElementById('password').style.borderColor = "rgba(255, 255, 255, 0.2)";
+        }
+
+        return isValid;
+    }
 </script>
 </head>
 <body>
@@ -192,11 +194,11 @@ function validation() {
             <form class="forma" onsubmit="return validation()" action="loginlogic.php" method="post">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="your@email.com" required>
-                <span id="email_error">Please enter a valid email</span>
+                <p id="email_error" style="color: red; font-size: 12px; text-align: left; display: none;">Please enter a valid email address</p>
 
                 <label for="password" style="margin-top:0.75rem;">Password</label>
                 <input type="password" id="password" name="password" placeholder="yourpassword" required>
-                <span id="password_error">Please enter a valid password</span>
+                <p id="password_error" style="color: red; font-size: 12px; text-align: left; display: none;">Password must be at least 8 characters with letters and numbers</p>
 
                 <button type="submit" name="submit" style="margin-top:0.75rem;">Continue</button>
             </form>

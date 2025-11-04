@@ -1,16 +1,11 @@
-<?php 
-include_once('config.php');
-    if(isset($_POST['submit']))
-    {
-        
-        $name = $_POST['name'];
-        $surname = $_POST['surname'];
-        $email = $_POST['email'];
-        $password = $_POST['password'];}
-?>
-
-
-
+<?php include_once('config.php'); ?>
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Sign Up</title>
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  
 <style>
 		
 * {
@@ -24,12 +19,14 @@ body {
     background-image: url(pics/bg.png);
     background-size: cover;
     background-position: center;
+    background-repeat: no-repeat;
+    background-attachment: fixed;
     font-family: Arial, sans-serif;
 }
 
 .section2 {
     display: flex;
-    justify-content: center;
+    justify-content: center;   
     align-items: center;
     min-height: 100vh;
     padding: 2rem;
@@ -87,8 +84,8 @@ label {
 }
 
 input[type="email"],
-input[type="password"]
-{
+input[type="password"],
+input[type='username'] {
     padding: 0.75rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
@@ -96,11 +93,21 @@ input[type="password"]
     color: #f1f1f1;
     font-size: 1rem;
     outline: none;
-
 }
 input[type='name'],
-input[type='surname'] {
-    padding: 10px;
+input[type='surname'] { 
+    padding: 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    background-color: rgba(0, 0, 0, 0.4);
+    color: #f1f1f1;
+    font-size: 0.9rem;
+    outline: none;
+    width: 100%;
+}
+
+input[type="text"] {
+    padding: 0.75rem;
     border-radius: 6px;
     border: 1px solid rgba(255, 255, 255, 0.2);
     background-color: rgba(0, 0, 0, 0.4);
@@ -109,35 +116,17 @@ input[type='surname'] {
     outline: none;
 }
 
-.name-row {
-  display: flex;
-  gap: 3px; 
-}
-
-.name-row input {
-  flex: 1; 
-  width: 100%; 
-  border-radius: 6px;
-  border: 1px solid rgba(255, 255, 255, 0.2);
-  background-color: rgba(0, 0, 0, 0.4);
-  color: #f1f1f1;
-  font-size: 0.9rem;
-  outline: none;
-}
-
-
-
 input::placeholder {
     color: #bbb;
 }
 
 #email_error,
 #password_error {
-    visibility: hidden;
+    display: none;
     color: red;
-    font-size: 10px;
-    margin: 0;
-    padding: 0;
+    font-size: 12px;
+    text-align: left;
+    margin-top: 4px;
 }
 
 button {
@@ -164,103 +153,90 @@ p {
     text-align: center;
     font-size: 0.9rem;  }
 
+.name-row {
+    display: flex;
+    gap: 8px;
+    width: 100%;
+    margin-bottom: 5px;
+}
+
+.name-col {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
 
 </style>
 
 
-</style>
-
-<script>
-
-function validation() {
- var email=document.getElementById('email').value;
- valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-
- var password = document.getElementById('password').value;
- valid_password_regex= /^(?=.*[A-Za-z])(?=.*\d)[A-Za-z\d]{8,}$/;
-
-    if (!(email.match(valid_email_regex)) || !(password.match(valid_password_regex))) {
-         if (!(email.match(valid_email_regex))) {
-            document.getElementById('email_error').style.visibility="visible";
-            document.getElementById('email').style.borderColor="red";
-        }else{
-            document.getElementById('email_error').style.visibility="hidden";
-            document.getElementById('email').style.borderColor="black";
-        }
-         if (!(password.match(valid_password_regex))) {
-            document.getElementById('password_error').style.visibility="visible";
-            document.getElementById('password').style.borderColor="red";
-        }else{
-            document.getElementById('password_error').style.visibility="hidden";
-            document.getElementById('password').style.borderColor="black";
-        }
-
-         return false;
-        }else{
-            document.getElementById('email_error').style.visibility="hidden";
-            document.getElementById('email').style.borderColor="black";
-            document.getElementById('password_error').style.visibility="hidden";
-            document.getElementById('password').style.borderColor="black";
-            return true;    
-        }}
-
-
-
-
-    
-</script>
-
-
-<!DOCTYPE html>
-<html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Document</title>
 </head>
 <body>
-    
-      <section class="section2">
-        <div class="SignUp">
-            <div class="intro">
+  <section class="section2">
+    <div class="SignUp">
+      <form class="forma" onsubmit="return validation()" action="register.php" method="post">
+        <label for="username">Username</label>
+        <input id="username" name="username" placeholder="username" required type="username">
+
         <div class="name-row">
-                  <form class="forma" onsubmit="return validation()" action="register.php" method="post">
-                    <label for="name">Name</label>
-                    <input type="name" id="name" placeholder="yourname" required>
-                    <span id="email_error">Please enter a valid name</span>
-
-                    
-                </form><br>
-                
-                  <form class="forma" onsubmit="return validation()" action="register.php" method="post">
-                    <label for="surname">Surname</label>
-                    <input type="surname" id="surname" placeholder="yoursurname" required>
-                    <span id="email_error">Please enter a valid surname</span>
-
-                    
-                </form><br>
-                </div>
-
-                <form class="forma" onsubmit="return validation()" action="register.php" method="post">
-                    <label for="email">Email Address</label>
-                    <input type="email" id="email" placeholder="your@email.com" required>
-                    <span id="email_error">Please enter a valid email</span>
-
-                    
-                </form><br>
-                
-                <form class="forma" onsubmit="return validation()" id="password-container" action="register.php" method="post">
-                    <label for="password">Password</label>
-                    <input type="password" id="password" placeholder="yourpassword" required>
-                    <span id="password_error">Please enter a valid password</span>
-
-                    <button type="submit">Continue</button>
-                </form>
-            </div><br>
-                <p>Log in to <a href="login.php">LetterDash</a></p>
-
+            <div class="name-col">
+                <label for="name">Name</label>
+                <input id="name" name="name" placeholder="yourname" required type="name">
+            </div>
+            <div class="name-col">
+                <label for="surname">Surname</label>
+                <input id="surname" name="surname" placeholder="yoursurname" required type="surname">
+            </div>
         </div>
 
-    </section>
+        <label for="email">Email Address</label>
+        <input id="email" name="email" type="email" placeholder="you@example.com" required>
+        <p id="email_error" style="color: red; font-size: 12px; text-align: left; display: none;">Please enter a valid email address</p>
+
+        <label for="password">Password</label>
+        <input id="password" name="password" type="password" placeholder="password" required>
+        <p id="password_error" style="color: red; font-size: 12px; text-align: left; display: none;">Please enter atleast 8 characters </p>
+
+        <button type="submit" name="submit">Continue</button>
+      </form>
+      <p>Log in to <a href="login.php">LetterDash</a></p>
+    </div>
+  </section>
+
+
+<script>
+    function validation() {
+        var email = document.getElementById('email').value;
+        var password = document.getElementById('password').value;
+        var emailError = document.getElementById('email_error');
+        var passwordError = document.getElementById('password_error');
+        
+        var valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+        var valid_password_regex = /^[A-Za-z0-9]$/;
+        
+        var isValid = true;
+
+        if (!valid_email_regex.test(email)) {
+            emailError.style.display = "block";
+            document.getElementById('email').style.borderColor = "#ff3333";
+            isValid = false;
+        } else {
+            emailError.style.display = "none";
+            document.getElementById('email').style.borderColor = "rgba(255, 255, 255, 0.2)";
+        }
+
+        if (!valid_password_regex.test(password)) {
+            passwordError.style.display = "block";
+            document.getElementById('password').style.borderColor = "#ff3333";
+            isValid = false;
+        } else {
+            passwordError.style.display = "none";
+            document.getElementById('password').style.borderColor = "rgba(255, 255, 255, 0.2)";
+        }
+
+        return isValid;
+    }
+</script>
 </body>
 </html>
