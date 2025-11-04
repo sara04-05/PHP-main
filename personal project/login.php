@@ -147,6 +147,19 @@ p {
     text-align: center;
     font-size: 0.9rem;  }
 
+input[type="email"]:focus,
+input[type="password"]:focus{
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(0, 0, 0, 0.4) inset !important;
+    -webkit-text-fill-color: #f1f1f1 !important;
+    transition: background-color 5000s ease-in-out 0s;}
+
 </style>
 
 <script>

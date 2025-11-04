@@ -167,6 +167,23 @@ p {
     gap: 2px;
 }
 
+input[type="email"]:focus,
+input[type="password"]:focus,
+input[type='username']:focus,
+input[type='name']:focus,
+input[type='surname']:focus {
+    background-color: rgba(0, 0, 0, 0.4) !important;
+}
+
+input:-webkit-autofill,
+input:-webkit-autofill:hover,
+input:-webkit-autofill:focus,
+input:-webkit-autofill:active {
+    -webkit-box-shadow: 0 0 0 30px rgba(0, 0, 0, 0.4) inset !important;
+    -webkit-text-fill-color: #f1f1f1 !important;
+    transition: background-color 5000s ease-in-out 0s;
+}
+
 
 </style>
 
@@ -194,9 +211,9 @@ p {
         <input id="email" name="email" type="email" placeholder="you@example.com" required>
         <p id="email_error" style="color: red; font-size: 12px; text-align: left; display: none;">Please enter a valid email address</p>
 
-        <label for="password">Password</label>
-        <input id="password" name="password" type="password" placeholder="password" required>
-        <p id="password_error" style="color: red; font-size: 12px; text-align: left; display: none;">Please enter atleast 8 characters </p>
+    <label for="password">Password</label>
+    <input id="password" name="password" type="password" placeholder="password" required>
+    <p id="password_error" style="color: red; font-size: 12px; text-align: left; display: none;">Password must be at least 8 characters and contain only letters and numbers</p>
 
         <button type="submit" name="submit">Continue</button>
       </form>
@@ -213,7 +230,8 @@ p {
         var passwordError = document.getElementById('password_error');
         
         var valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-        var valid_password_regex = /^[A-Za-z0-9]$/;
+    // require at least 8 characters, only letters and numbers
+    var valid_password_regex = /^[A-Za-z0-9]{8,}$/;
         
         var isValid = true;
 
