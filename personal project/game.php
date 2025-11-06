@@ -75,6 +75,12 @@ $randomImage = $images[array_rand($images)];
             align-items: center;
         }
 
+        /* Timer box smaller than letter box */
+        #timerBox {
+            width: 120px;
+            font-size: 1.5rem;
+        }
+
         .generate-btn {
             background-color: #0c7230;
             color: white;
@@ -186,7 +192,9 @@ $randomImage = $images[array_rand($images)];
 
     <section class="letter-section">
         <div class="letter-box" id="letterBox">—</div>
-        <button type="button" class="generate-btn" id="generateLetterBtn">Generate Letter</button>
+        <!-- Timer display -->
+        <div class="letter-box" id="timerBox">0:00</div>
+        <button type="button" class="generate-btn" id="startTimerBtn">Start Timer</button>
     </section>
 
     <section class="section2">         
@@ -230,14 +238,13 @@ $randomImage = $images[array_rand($images)];
         ];
 
         const letterBox = document.getElementById("letterBox");
-        const generateLetterBtn = document.getElementById("generateLetterBtn");
+        const timerBox = document.getElementById("timerBox");
+        const startTimerBtn = document.getElementById("startTimerBtn");
 
         function generateLetter() {
             const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
             letterBox.textContent = randomLetter;
         }
-
-        generateLetterBtn.addEventListener("click", generateLetter);
 
         function showModal(message) {
             const modal = document.getElementById("customModal");
@@ -285,6 +292,44 @@ $randomImage = $images[array_rand($images)];
                 showModal("Please fill in all fields before finishing!");
             }
         });
+
+        let timerInterval;
+        let time = 0; 
+
+        function updateTimerDisplay() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            timerBox.textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
+        }
+function startTimer() {
+    generateLetter();
+
+    if (timerInterval) clearInterval(timerInterval); 
+    time = 0;
+    updateTimerDisplay();
+    timerInterval = setInterval(() => {
+        if (time < 60) { 
+            time++;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+
+            const inputs = document.querySelectorAll("#gameTable input");
+            let allFilled = true;
+            inputs.forEach(input => {
+                if (input.value.trim() === "") allFilled = false;
+            });
+
+            if (!allFilled) {
+                showModal("Game Over!");
+            }
+        }
+    }, 1000);
+}
+
+
+        startTimerBtn.addEventListener("click", startTimer);
+
     </script>
 </body> 
 </html>

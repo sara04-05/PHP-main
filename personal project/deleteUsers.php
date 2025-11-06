@@ -1,5 +1,8 @@
 <?php 
-
+	/*
+	We will include config.php for connection with database.
+	Delete a user based on his id.
+	*/
 	include_once('config.php');
 
 	$id = $_GET['id'];

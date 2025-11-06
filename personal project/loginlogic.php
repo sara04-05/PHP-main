@@ -18,23 +18,36 @@ if(isset($_POST['submit'])) {
         $selectUser->bindParam(":email", $email);
         $selectUser->execute();
         
-        $data = $selectUser->fetch(PDO::FETCH_ASSOC);
+        $data = $selectUser->fetch();
         
-        if ($data && password_verify($password, $data['password'])) {
+        if ($data == false){
+				echo "The user does not exist
+				";
+			}else{
+            if(password_verify($password, $data['password'])) {
             $_SESSION['id'] = $data['id'];
             $_SESSION['email'] = $data['email'];
             $_SESSION['password'] = $data['password'];
             header('Location: game.php');
             exit();
-        } else {
+            }
+            else{
             $_SESSION['error'] = "Invalid email or password";
-            header('Location: game.php');
+            header('Location: login.php');
             exit();
         }
-    } catch(PDOException $e) {
-        $_SESSION['error'] = "System error. Please try again later.";
-        header('Location: game.php');
+        }
+}
+
+    catch (PDOException $e) {
+        $_SESSION['error'] = "Database error: " . $e->getMessage();
+        header('Location: login.php');
         exit();
     }
+} else {
+    header('Location: login.php');
+    echo "The password is not valid";
+
+    exit();
 }
 ?>

@@ -203,7 +203,6 @@ input:-webkit-autofill:active {
         <div class="intro">
             <div class="img"><img src="<?php echo $randomImage; ?>" alt="Random Image" class="logo"></div>
 
-            <!-- Single form with proper name attributes and submit button -->
             <form class="forma" onsubmit="return validation()" action="loginlogic.php" method="post">
                 <label for="email">Email Address</label>
                 <input type="email" id="email" name="email" placeholder="your@email.com" required>
