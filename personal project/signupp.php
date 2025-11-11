@@ -230,7 +230,6 @@ input:-webkit-autofill:active {
         var passwordError = document.getElementById('password_error');
         
         var valid_email_regex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
-    // require at least 8 characters, only letters and numbers
     var valid_password_regex = /^[A-Za-z0-9]{8,}$/;
         
         var isValid = true;

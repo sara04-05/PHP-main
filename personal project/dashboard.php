@@ -1,171 +1,170 @@
-<?php 
-/*Creating a session  based on a session identifier, passed via a GET or POST request.
-  We will include config.php for connection with database.
-  We will fetch all datas from users in database and show them.
-  If a user is admin, he can update or delete a user data.
-  */
-	  session_start();
+<?php
+session_start();
 
-    include_once('config.php');
+// Admin check
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header('Location: login.php'); 
+    exit;
+}
 
-    if (empty($_SESSION['email'])) {
-          header("Location: login.php");
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "gamee";
+
+// Create connection
+$conn = new mysqli($servername, $username, $password, $dbname);
+if ($conn->connect_error) {
+    die("Connection failed: " . $conn->connect_error);
+}
+
+// Fetch all game results
+$result = $conn->query("SELECT emer, mbiemer, shtet, qytet, kafsh, send FROM loja");
+$gameResults = [];
+
+if ($result->num_rows > 0) {
+    while ($row = $result->fetch_assoc()) {
+        $gameResults[] = [
+            "emer" => $row["emer"],
+            "mbiemer" => $row["mbiemer"],
+            "shtet" => $row["shtet"],
+            "qytet" => $row["qytet"],
+            "kafsh" => $row["kafsh"],
+            "send" => $row["send"],
+        ];
     }
-   
-    $sql = "SELECT * FROM users";
-    $selectUsers = $conn->prepare($sql);
-    $selectUsers->execute();
+}
 
-    $users_data = $selectUsers->fetchAll();
-	
+// Fetch users
+$userResult = $conn->query("SELECT username, email FROM users"); // Adjust columns if needed
+$users = [];
+if ($userResult->num_rows > 0) {
+    while ($row = $userResult->fetch_assoc()) {
+        $users[] = $row;
+    }
+}
 
- ?>
+// Stats
+$stats = [
+    "totalUsers" => count($users),
+    "gamesPlayed" => count($gameResults),
+    "gamesCompleted" => count($gameResults), // assuming all rows are completed
+    "gamesFailed" => 0, // no concept of failed yet
+];
 
- <!DOCTYPE html>
- <html>
- <head>
- 	<title>Dashboard</title>
- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
- 	 <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-  	<link rel="apple-touch-icon" href="/docs/5.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-	<link rel="manifest" href="/docs/5.1/assets/img/favicons/manifest.json">
-	<link rel="mask-icon" href="/docs/5.1/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon.ico">
-	<meta name="theme-color" content="#7952b3">
- </head>
- <body>
- 
- 
- <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#"><?php echo "Welcome to dashboard ".$_SESSION['username']; ?></a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-50" type="text" placeholder="Search" aria-label="Search">
-  <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="logout.php">Sign out</a>
-    </div>
-  </div>
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Admin Dashboard - LetterDash</title>
+    <style>
+        * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
+        body { background: #f0f0f0; color: #333; }
+        
+        header {
+            background-color: #0c7230;
+            color: white;
+            padding: 20px;
+            position: relative; /* allow absolute positioning */
+            text-align: center;
+        }
+        
+        header h1 { margin: 0; }
+        
+        .logout-btn {
+            padding: 8px 15px;
+            background-color: #c70000;
+            color: white;
+            border: none;
+            border-radius: 6px;
+            cursor: pointer;
+            position: absolute; /* move relative to header */
+            top: 10px;          /* distance from top of header */
+            right: 20px;        /* distance from right edge */
+        }
+        
+        .logout-btn:hover { background-color: #ff0000; }
+        
+        .container { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; }
+        .card { background: white; border-radius: 12px; padding: 20px; flex: 1 1 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
+        .card h2 { margin-bottom: 15px; color: #0c7230; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
+        th { background-color: #0c7230; color: white; }
+        tr:nth-child(even) { background-color: #f2f2f2; }
+        .status-completed { color: green; font-weight: bold; }
+        .status-failed { color: red; font-weight: bold; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Admin Dashboard</h1>
+    <form method="post">
+        <button name="logout" class="logout-btn">Logout</button>
+    </form>
 </header>
 
-<div class="container-fluid">
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-           <?php if ($_SESSION['is_admin'] == 'true') { ?>
-            <li class="nav-item">
-              <a class="nav-link" href="home.php">
-                <span data-feather="file"></span>
-                Home
-              </a>
-            </li>
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="dashboard.php">
-              <span data-feather="home"></span>
-              Dashboard
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="list_movies.php">
-              <span data-feather="file"></span>
-              Movies
-            </a>
-          </li>
-          <li class="nav-item">
-            <a class="nav-link" href="bookings.php">
-              <span ></span>
-              Bookings
-            </a>
-          </li>
-        </ul>
-        <?php }else {?>
-          <li class="nav-item">
-              <a class="nav-link" href="home.php">
-               
-                Home
-              </a>
-            </li>
-          <li class="nav-item">
-          <a class="nav-link" href="bookings.php">
-            <span ></span>
-            Bookings
-          </a>
-        </li>
-         <li class="nav-item">
-          <a class="nav-link" href="dashboard.php">
-            <span ></span>
-            Dashboard
-          </a>
-        </li>
-        </ul>
-      <?php
-      } ?>
+<div class="container">
+    <!-- Statistics -->
+    <div class="card">
+        <h2>Statistics</h2>
+        <p>Total Users: <strong><?php echo $stats['totalUsers']; ?></strong></p>
+        <p>Games Played: <strong><?php echo $stats['gamesPlayed']; ?></strong></p>
+        <p>Games Completed: <strong><?php echo $stats['gamesCompleted']; ?></strong></p>
+        <p>Games Failed: <strong><?php echo $stats['gamesFailed']; ?></strong></p>
+    </div>
 
-        
-      </div>
-    </nav>
-
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-        
-      </div>
-
-    <?php if ($_SESSION['is_admin'] == 'true') { ?>
-
-      <h2>Users</h2>
-      <div class="table-responsive">
-        <table class="table table-striped table-sm">
-          <thead>
+    <!-- Users Table -->
+    <div class="card">
+        <h2>Users</h2>
+        <table>
             <tr>
-              <th scope="col">Id</th>
-              <th scope="col">Emri</th>
-              <th scope="col">Username</th>
-              <th scope="col">Email</th>
-              <th scope="col">Update</th>
-              <th scope="col">Delete</th>
+                <th>Username</th>
+                <th>Email</th>
             </tr>
-          </thead>
-          <tbody>
-            <?php foreach ($users_data as $user_data) { ?>
-
-               <tr>
-                <td><?php echo $user_data['id']; ?></td>
-                <td><?php echo $user_data['emri']; ?></td>
-                <td><?php echo $user_data['username']; ?></td>
-                <td><?php echo $user_data['email']; ?></td>
-                <!-- If we want to update a user we need to link into editUsers.php -->
-                <td><a href="editUsers.php?id=<?= $user_data['id'];?>">Update</a></td>
-                  <!-- If we want to delete a user we need to link into deleteUsers.php -->
-                <td><a href="deleteUsers.php?id=<?= $user_data['id'];?>">Delete</a></td>
-              </tr>
-              
-           <?php  } ?>
-           
-            
-          </tbody>
+            <?php foreach($users as $user): ?>
+            <tr>
+                <td><?php echo $user['username']; ?></td>
+                <td><?php echo $user['email']; ?></td>
+            </tr>
+            <?php endforeach; ?>
         </table>
-      </div>
-     <?php  } else {
-      
-    } ?>
-    </main>
-  </div>
+    </div>
+
+    <!-- Game Results Table -->
+    <div class="card" style="flex: 2 1 400px;">
+        <h2>All Game Results</h2>
+        <table>
+            <tr>
+                <th>Emer</th>
+                <th>Mbiemer</th>
+                <th>Shtet</th>
+                <th>Qytet</th>
+                <th>Kafsh</th>
+                <th>Send</th>
+            </tr>
+            <?php foreach($gameResults as $game): ?>
+            <tr>
+                <td><?php echo $game['emer']; ?></td>
+                <td><?php echo $game['mbiemer']; ?></td>
+                <td><?php echo $game['shtet']; ?></td>
+                <td><?php echo $game['qytet']; ?></td>
+                <td><?php echo $game['kafsh']; ?></td>
+                <td><?php echo $game['send']; ?></td>
+            </tr>
+            <?php endforeach; ?>
+        </table>
+    </div>
 </div>
 
-	<script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
-      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
-  </body>
+</body>
 </html>
-
-
- </body>
- </html>

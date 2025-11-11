@@ -210,7 +210,7 @@ input:-webkit-autofill:active {
 
                 <label for="password" style="margin-top:0.75rem;">Password</label>
                 <input type="password" id="password" name="password" placeholder="yourpassword" required>
-                <p id="password_error" style="color: red; font-size: 12px; text-align: left; display: none;">Password must be at least 8 characters with letters and numbers</p>
+                <p id="password_error" >Password must be at least 8 characters with letters and numbers</p>
 
                 <button type="submit" name="submit" style="margin-top:0.75rem;">Continue</button>
             </form>
