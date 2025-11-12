@@ -1,125 +1,94 @@
-<?php 
+<?php
+session_start();
 
-	 session_start();
+// Only allow admin users
+if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
+    header('Location: login.php'); 
+    exit;
+}
 
-   include_once('config.php');
+include_once('config.php');
 
-   $id = $_GET['id'];
+// Get user ID safely
+$id = isset($_GET['id']) ? intval($_GET['id']) : 0;
 
-   $sql = "SELECT * FROM users WHERE id=:id";
-   $selectUser = $conn->prepare($sql);
-   $selectUser->bindParam(':id', $id);
-   $selectUser->execute();
+if ($id <= 0) {
+    header('Location: dashboard.php'); 
+    exit;
+}
 
-   $user_data = $selectUser->fetch();
-	
+// Fetch user data
+$sql = "SELECT * FROM users WHERE id=:id";
+$stmt = $conn->prepare($sql);
+$stmt->bindParam(':id', $id, PDO::PARAM_INT);
+$stmt->execute();
+$user_data = $stmt->fetch(PDO::FETCH_ASSOC);
 
- ?>
+if (!$user_data) {
+    header('Location: dashboard.php');
+    exit;
+}
 
- <!DOCTYPE html>
- <html>
- <head>
- 	<title>Dashboard</title>
- 	<link href="https://cdn.jsdelivr.net/npm/bootstrap@5.1.3/dist/css/bootstrap.min.css" rel="stylesheet" integrity="sha384-1BmE4kWBq78iYhFldvKuhfTAU6auU8tT94WrHftjDbrCEXSU1oBoqyl2QvZ6jIW3" crossorigin="anonymous">
- 	 <meta name="viewport" content="width=device-width, initial-scale=1">
-    <meta name="description" content="">
-    <meta name="author" content="Mark Otto, Jacob Thornton, and Bootstrap contributors">
-    <meta name="generator" content="Hugo 0.88.1">
-  	<link rel="apple-touch-icon" href="/docs/5.1/assets/img/favicons/apple-touch-icon.png" sizes="180x180">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-32x32.png" sizes="32x32" type="image/png">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon-16x16.png" sizes="16x16" type="image/png">
-	<link rel="manifest" href="/docs/5.1/assets/img/favicons/manifest.json">
-	<link rel="mask-icon" href="/docs/5.1/assets/img/favicons/safari-pinned-tab.svg" color="#7952b3">
-	<link rel="icon" href="/docs/5.1/assets/img/favicons/favicon.ico">
-	<meta name="theme-color" content="#7952b3">
- </head>
- <body>
- 
- 
- <header class="navbar navbar-dark sticky-top bg-dark flex-md-nowrap p-0 shadow">
-  <a class="navbar-brand col-md-3 col-lg-2 me-0 px-3" href="#"><?php echo "Welcome to dashboard ".$_SESSION['username']; ?></a>
-  <button class="navbar-toggler position-absolute d-md-none collapsed" type="button" data-bs-toggle="collapse" data-bs-target="#sidebarMenu" aria-controls="sidebarMenu" aria-expanded="false" aria-label="Toggle navigation">
-    <span class="navbar-toggler-icon"></span>
-  </button>
-  <input class="form-control form-control-dark w-50" type="text" placeholder="Search" aria-label="Search">
-  <div class="navbar-nav">
-    <div class="nav-item text-nowrap">
-      <a class="nav-link px-3" href="logout.php">Sign out</a>
-    </div>
-  </div>
+// Handle logout
+if (isset($_POST['logout'])) {
+    session_destroy();
+    header('Location: login.php');
+    exit;
+}
+?>
+
+<!DOCTYPE html>
+<html lang="sq">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Edit User - Admin Dashboard</title>
+    <style>
+        body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 0; }
+        header { background: #0c7230; color: white; padding: 20px; position: relative; text-align: center; }
+        header h1 { margin: 0; }
+        .logout-btn { position: absolute; top: 15px; right: 20px; background: #c70000; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
+        .logout-btn:hover { background: #ff0000; }
+        .container { padding: 20px; max-width: 600px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 40px; }
+        h2 { color: #0c7230; margin-bottom: 20px; }
+        .form-group { margin-bottom: 15px; }
+        label { display: block; margin-bottom: 5px; font-weight: bold; }
+        input { width: 100%; padding: 10px; border-radius: 6px; border: 1px solid #ccc; }
+        button { background: #0c7230; color: white; padding: 12px; border: none; border-radius: 8px; width: 100%; cursor: pointer; font-size: 16px; }
+        button:hover { background: #085f23; }
+        a.back-link { display: inline-block; margin-bottom: 20px; color: #0c7230; text-decoration: none; }
+        a.back-link:hover { text-decoration: underline; }
+    </style>
+</head>
+<body>
+
+<header>
+    <h1>Edit User</h1>
+    <form method="post">
+        <button name="logout" class="logout-btn">Logout</button>
+    </form>
 </header>
 
-<div class="container-fluid">
-  <div class="row">
-    <nav id="sidebarMenu" class="col-md-3 col-lg-2 d-md-block bg-light sidebar collapse">
-      <div class="position-sticky pt-3">
-        <ul class="nav flex-column">
-          <li class="nav-item">
-            <a class="nav-link active" aria-current="page" href="dashboard.php">
-              <span data-feather="home"></span>
-              Dashboard
-            </a>
-          
-        </ul>
+<div class="container">
+    <a href="dashboard.php" class="back-link">&larr; Back to Dashboard</a>
+    <h2>Edit User Details</h2>
+    <form action="updateUsers.php" method="post">
+        <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_data['id']); ?>">
 
-       
-      </div>
-    </nav>
 
-    <main class="col-md-9 ms-sm-auto col-lg-10 px-md-4">
-      <div class="d-flex justify-content-between flex-wrap flex-md-nowrap align-items-center pt-3 pb-2 mb-3 border-bottom">
-        <h1 class="h2">Dashboard</h1>
-        <div class="btn-toolbar mb-2 mb-md-0">
-          <div class="btn-group me-2">
-            <button type="button" class="btn btn-sm btn-outline-secondary">Share</button>
-            <button type="button" class="btn btn-sm btn-outline-secondary">Export</button>
-          </div>
-          <button type="button" class="btn btn-sm btn-outline-secondary dropdown-toggle">
-            <span data-feather="calendar"></span>
-            This week
-          </button>
+        <div class="form-group">
+            <label for="username">Username</label>
+            <input type="text" id="username" name="username" value="<?php echo htmlspecialchars($user_data['username']); ?>" required>
         </div>
-      </div>
 
-    
+        <div class="form-group">
+            <label for="email">Email</label>
+            <input type="email" id="email" name="email" value="<?php echo htmlspecialchars($user_data['email']); ?>" required>
+        </div>
 
-      <h2>Edit user's details</h2>
-      <div class="table-responsive">
-        
-        <form action="updateUsers.php" method="post">
-    
-        <div class="form-floating">
-          <input type="number" class="form-control" id="floatingInput" placeholder="Id" name="id" value="<?php echo  $user_data['id'] ?>">
-          <label for="floatingInput">Id</label>
-        </div>
-        <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInput" placeholder="Emri" name="emri" value="<?php echo  $user_data['emri'] ?>">
-          <label for="floatingInput">Emri</label>
-        </div>
-        <div class="form-floating">
-          <input type="text" class="form-control" id="floatingInput" placeholder="Username" name="username" value="<?php echo  $user_data['username'] ?>">
-          <label for="floatingInput">Username</label>
-        </div>
-        <div class="form-floating">
-          <input type="email" class="form-control" id="floatingInput" placeholder="Email" name="email" value="<?php echo  $user_data['email'] ?>">
-          <label for="floatingInput">Email</label>
-        </div>
-        <br>
-        <button class="w-100 btn btn-lg btn-primary" type="submit" name="submit">Change</button>
-      </form>
-
-
-      </div>
-    </main>
-  </div>
+        <button type="submit" name="submit">Update User</button>
+    </form>
 </div>
 
-	<script src="/docs/5.1/dist/js/bootstrap.bundle.min.js" integrity="sha384-ka7Sk0Gln4gmtz2MlQnikT1wXgYsOg+OMhuP+IlRH9sENBO0LRn5q+8nbTov4+1p" crossorigin="anonymous"></script>
-
-      <script src="https://cdn.jsdelivr.net/npm/feather-icons@4.28.0/dist/feather.min.js" integrity="sha384-uO3SXW5IuS1ZpFPKugNNWqTZRRglnUJK6UAZ/gxOX80nxEkN9NcGZTftn6RzhGWE" crossorigin="anonymous"></script><script src="https://cdn.jsdelivr.net/npm/chart.js@2.9.4/dist/Chart.min.js" integrity="sha384-zNy6FEbO50N+Cg5wap8IKA4M/ZnLJgzc6w2NqACZaK0u0FXfOWRRJOnQtpZun8ha" crossorigin="anonymous"></script><script src="dashboard.js"></script>
-  </body>
+</body>
 </html>
-
-
- </body>
- </html>

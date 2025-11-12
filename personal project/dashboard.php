@@ -32,14 +32,14 @@ if ($result->num_rows > 0) {
     }
 }
 
-$userResult = $conn->query("SELECT username, email FROM users"); 
+// Updated query to include 'id' for actions
+$userResult = $conn->query("SELECT id, username, email FROM users"); 
 $users = [];
 if ($userResult->num_rows > 0) {
     while ($row = $userResult->fetch_assoc()) {
         $users[] = $row;
     }
 }
-
 
 $totalUsersQuery = $conn->query("SELECT COUNT(*) AS total FROM users");
 $totalUsers = ($totalUsersQuery && $totalUsersQuery->num_rows > 0) ? $totalUsersQuery->fetch_assoc()['total'] : 0;
@@ -53,7 +53,6 @@ $stats = [
     "gamesCompleted" => $gamesPlayed, 
     "gamesFailed" => 0,
 ];
-
 
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -105,6 +104,9 @@ if (isset($_POST['logout'])) {
         tr:nth-child(even) { background-color: #f2f2f2; }
         .status-completed { color: green; font-weight: bold; }
         .status-failed { color: red; font-weight: bold; }
+        .action-btn { padding: 5px 10px; border-radius: 5px; text-decoration: none; color: white; }
+        .edit-btn { background-color: #0c7230; }
+        .delete-btn { background-color: #c70000; }
     </style>
 </head>
 <body>
@@ -132,11 +134,16 @@ if (isset($_POST['logout'])) {
             <tr>
                 <th>Username</th>
                 <th>Email</th>
+                <th>Actions</th>
             </tr>
             <?php foreach($users as $user): ?>
             <tr>
                 <td><?php echo $user['username']; ?></td>
                 <td><?php echo $user['email']; ?></td>
+                <td>
+                    <a href="editUsers.php?id=<?php echo $user['id']; ?>" class="action-btn edit-btn">Edit</a>
+                    <a href="deleteUsers.php?id=<?php echo $user['id']; ?>" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
+                </td>
             </tr>
             <?php endforeach; ?>
         </table>
