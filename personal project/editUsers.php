@@ -17,7 +17,7 @@ if ($id <= 0) {
     exit;
 }
 
-// Fetch user data
+// Fetch user data including name and surname
 $sql = "SELECT * FROM users WHERE id=:id";
 $stmt = $conn->prepare($sql);
 $stmt->bindParam(':id', $id, PDO::PARAM_INT);
@@ -45,10 +45,8 @@ if (isset($_POST['logout'])) {
     <title>Edit User - Admin Dashboard</title>
     <style>
         body { font-family: Arial, sans-serif; background: #f0f0f0; margin: 0; padding: 0; }
-        header { background: #0c7230; color: white; padding: 20px; position: relative; text-align: center; }
+        header { background: #0c7230; color: white; padding: 20px; text-align: center; position: relative; }
         header h1 { margin: 0; }
-        .logout-btn { position: absolute; top: 15px; right: 20px; background: #c70000; color: white; border: none; padding: 8px 15px; border-radius: 5px; cursor: pointer; }
-        .logout-btn:hover { background: #ff0000; }
         .container { padding: 20px; max-width: 600px; margin: auto; background: white; border-radius: 12px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); margin-top: 40px; }
         h2 { color: #0c7230; margin-bottom: 20px; }
         .form-group { margin-bottom: 15px; }
@@ -64,9 +62,6 @@ if (isset($_POST['logout'])) {
 
 <header>
     <h1>Edit User</h1>
-    <form method="post">
-        <button name="logout" class="logout-btn">Logout</button>
-    </form>
 </header>
 
 <div class="container">
@@ -75,6 +70,15 @@ if (isset($_POST['logout'])) {
     <form action="updateUsers.php" method="post">
         <input type="hidden" name="id" value="<?php echo htmlspecialchars($user_data['id']); ?>">
 
+        <div class="form-group">
+            <label for="emer">Name</label>
+            <input type="text" id="emer" name="emer" value="<?php echo htmlspecialchars($user_data['emer']); ?>" required>
+        </div>
+
+        <div class="form-group">
+            <label for="mbiemer">Surname</label>
+            <input type="text" id="mbiemer" name="mbiemer" value="<?php echo htmlspecialchars($user_data['mbiemer']); ?>" required>
+        </div>
 
         <div class="form-group">
             <label for="username">Username</label>

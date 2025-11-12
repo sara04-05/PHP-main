@@ -16,9 +16,9 @@ if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
+// Fetch game results
 $result = $conn->query("SELECT emer, mbiemer, shtet, qytet, kafsh, send FROM loja");
 $gameResults = [];
-
 if ($result->num_rows > 0) {
     while ($row = $result->fetch_assoc()) {
         $gameResults[] = [
@@ -32,8 +32,8 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Updated query to include 'id' for actions
-$userResult = $conn->query("SELECT id, username, email FROM users"); 
+// Fetch users including Name and Surname
+$userResult = $conn->query("SELECT id, name, surname, username, email FROM users"); 
 $users = [];
 if ($userResult->num_rows > 0) {
     while ($row = $userResult->fetch_assoc()) {
@@ -41,6 +41,7 @@ if ($userResult->num_rows > 0) {
     }
 }
 
+// Statistics
 $totalUsersQuery = $conn->query("SELECT COUNT(*) AS total FROM users");
 $totalUsers = ($totalUsersQuery && $totalUsersQuery->num_rows > 0) ? $totalUsersQuery->fetch_assoc()['total'] : 0;
 
@@ -54,6 +55,7 @@ $stats = [
     "gamesFailed" => 0,
 ];
 
+// Logout
 if (isset($_POST['logout'])) {
     session_destroy();
     header('Location: login.php');
@@ -70,17 +72,14 @@ if (isset($_POST['logout'])) {
     <style>
         * { margin:0; padding:0; box-sizing:border-box; font-family: Arial, sans-serif; }
         body { background: #f0f0f0; color: #333; }
-        
         header {
             background-color: #0c7230;
             color: white;
             padding: 20px;
-            position: relative; /* allow absolute positioning */
+            position: relative;
             text-align: center;
         }
-        
         header h1 { margin: 0; }
-        
         .logout-btn {
             padding: 8px 15px;
             background-color: #c70000;
@@ -88,13 +87,11 @@ if (isset($_POST['logout'])) {
             border: none;
             border-radius: 6px;
             cursor: pointer;
-            position: absolute; /* move relative to header */
-            top: 10px;          /* distance from top of header */
-            right: 20px;        /* distance from right edge */
+            position: absolute;
+            top: 10px;
+            right: 20px;
         }
-        
         .logout-btn:hover { background-color: #ff0000; }
-        
         .container { padding: 20px; display: flex; flex-wrap: wrap; gap: 20px; }
         .card { background: white; border-radius: 12px; padding: 20px; flex: 1 1 200px; box-shadow: 0 4px 10px rgba(0,0,0,0.1); }
         .card h2 { margin-bottom: 15px; color: #0c7230; }
@@ -102,8 +99,6 @@ if (isset($_POST['logout'])) {
         th, td { padding: 10px; border: 1px solid #ddd; text-align: center; }
         th { background-color: #0c7230; color: white; }
         tr:nth-child(even) { background-color: #f2f2f2; }
-        .status-completed { color: green; font-weight: bold; }
-        .status-failed { color: red; font-weight: bold; }
         .action-btn { padding: 5px 10px; border-radius: 5px; text-decoration: none; color: white; }
         .edit-btn { background-color: #0c7230; }
         .delete-btn { background-color: #c70000; }
@@ -132,14 +127,18 @@ if (isset($_POST['logout'])) {
         <h2>Users</h2>
         <table>
             <tr>
+                <th>Name</th>
+                <th>Surname</th>
                 <th>Username</th>
                 <th>Email</th>
                 <th>Actions</th>
             </tr>
             <?php foreach($users as $user): ?>
             <tr>
-                <td><?php echo $user['username']; ?></td>
-                <td><?php echo $user['email']; ?></td>
+                <td><?php echo htmlspecialchars($user['name']); ?></td>
+                <td><?php echo htmlspecialchars($user['surname']); ?></td>
+                <td><?php echo htmlspecialchars($user['username']); ?></td>
+                <td><?php echo htmlspecialchars($user['email']); ?></td>
                 <td>
                     <a href="editUsers.php?id=<?php echo $user['id']; ?>" class="action-btn edit-btn">Edit</a>
                     <a href="deleteUsers.php?id=<?php echo $user['id']; ?>" class="action-btn delete-btn" onclick="return confirm('Are you sure you want to delete this user?');">Delete</a>
