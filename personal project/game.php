@@ -359,7 +359,7 @@ logoutBtn.addEventListener("click", () => {
         })
         .catch(err => {
             console.error(err);
-            showModal("Error submitting game.");
+            showModal("Could not submit game. Please make sure to log in.");
         });
         }
 
