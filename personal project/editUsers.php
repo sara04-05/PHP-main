@@ -72,12 +72,12 @@ if (isset($_POST['logout'])) {
 
         <div class="form-group">
             <label for="emer">Name</label>
-            <input type="text" id="emer" name="emer" value="<?php echo htmlspecialchars($user_data['emer']); ?>" required>
+            <input type="text" id="emer" name="emer" value="<?php echo htmlspecialchars($user_data['name']); ?>" required>
         </div>
 
         <div class="form-group">
             <label for="mbiemer">Surname</label>
-            <input type="text" id="mbiemer" name="mbiemer" value="<?php echo htmlspecialchars($user_data['mbiemer']); ?>" required>
+            <input type="text" id="mbiemer" name="mbiemer" value="<?php echo htmlspecialchars($user_data['surname']); ?>" required>
         </div>
 
         <div class="form-group">

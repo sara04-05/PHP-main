@@ -32,7 +32,6 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Fetch users including Name and Surname
 $userResult = $conn->query("SELECT id, name, surname, username, email FROM users"); 
 $users = [];
 if ($userResult->num_rows > 0) {
