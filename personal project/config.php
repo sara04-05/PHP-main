@@ -3,7 +3,7 @@
 $user="root";
 $pass="";
 $server="localhost";
-$dbname="game";
+$dbname="gamee";
 
 try {
 	//Creating a PDO to connect with database
@@ -12,4 +12,4 @@ try {
 	echo "error: " . $e->getMessage();
 }
 
-?>
+?> 
