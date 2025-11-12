@@ -1,11 +1,5 @@
 <?php 
-session_start(); 
-
-if (!isset($_SESSION['user_id'])) {
-    header("Location: login.php");
-    exit;
-}
-
+session_start();
 $images = [     
     "pics/brain.png",     
     "pics/dolphin.png",     
@@ -15,8 +9,7 @@ $images = [
     "pics/raven.png", 
 ];  
 $randomImage = $images[array_rand($images)]; 
-
-?>
+?>  
 
 <!DOCTYPE html> 
 <html lang="sq"> 
@@ -279,18 +272,18 @@ window.addEventListener("click", (e) => {
         </div>
     </div>
 
-<script>
-const alphabet = ["A","B","C","Ç","D","DH","E","Ë","F","G","GJ","H","I","J","K","L","LL","M","N","NJ","O","P","Q","R","RR","S","SH","T","TH","U","V","X","XH","Y","Z","ZH"];
-const letterBox = document.getElementById("letterBox");
-const timerBox = document.getElementById("timerBox");
-const startTimerBtn = document.getElementById("startTimerBtn");
+    <script>
+        const alphabet = ["A","B","C","Ç","D","DH","E","Ë","F","G","GJ","H","I","J","K","L","LL","M","N","NJ","O","P","Q","R","RR","S","SH","T","TH","U","V","X","XH","Y","Z","ZH"];
+        const letterBox = document.getElementById("letterBox");
+        const timerBox = document.getElementById("timerBox");
+        const startTimerBtn = document.getElementById("startTimerBtn");
 
-function generateLetter() {
-    const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-    letterBox.textContent = randomLetter;
-}
+        function generateLetter() {
+            const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+            letterBox.textContent = randomLetter;
+        }
 
-function showModal(message) {
+      function showModal(message) {
     const modal = document.getElementById("customModal");
     const msg = document.getElementById("modalMessage");
 
@@ -309,41 +302,36 @@ function showModal(message) {
     };
 }
 
-function submitGame() {
-    const inputs = document.querySelectorAll("#gameTable input");
-    let allFilled = true;
-    inputs.forEach(input => { if (input.value.trim() === "") allFilled = false; });
 
-    if (!allFilled) {
-        showModal("Please fill in all fields before finishing!");
-        return;
-    }
+        function submitGame() {
+            const inputs = document.querySelectorAll("#gameTable input");
+            let allFilled = true;
+            inputs.forEach(input => { if (input.value.trim() === "") allFilled = false; });
 
-    const formData = new FormData(document.getElementById("gameForm"));
-    fetch('submit_game.php', { method: 'POST', body: formData })
-        .then(res => res.json())
-        .then(data => {
-            if (data.status === 'success') {
-                showModal(data.message);
+            if (!allFilled) { showModal("Please fill in all fields before finishing!"); return; }
 
-                // Reset the table for a new game
-                const table = document.getElementById("gameTable");
-                table.innerHTML = `
-                    <tr>
-                        <th>Emer</th><th>Mbiemer</th><th>Shtet</th><th>Qytet</th><th>Kafsh</th><th>Send</th>
-                    </tr>
-                    <tr>
-                        <td><input type="text" name="emer[]"></td>
-                        <td><input type="text" name="mbiemer[]"></td>
-                        <td><input type="text" name="shtet[]"></td>
-                        <td><input type="text" name="qytet[]"></td>
-                        <td><input type="text" name="kafsh[]"></td>
-                        <td><input type="text" name="send[]"></td>
-                        <td><button type="button" id="finishBtn">Finish</button></td>
-                    </tr>
-                `;
-                document.getElementById("finishBtn").addEventListener("click", submitGame);
-
+            const formData = new FormData(document.getElementById("gameForm"));
+            fetch('submit_game.php', {method: 'POST', body: formData})
+            .then(res => res.json())
+            .then(data => {
+                if(data.status === 'success'){
+                    showModal(data.message);
+                    const table = document.getElementById("gameTable");
+                    table.innerHTML = `
+                        <tr>
+                            <th>Emer</th><th>Mbiemer</th><th>Shtet</th><th>Qytet</th><th>Kafsh</th><th>Send</th>
+                        </tr>
+                        <tr>
+                            <td><input type="text" name="emer[]"></td>
+                            <td><input type="text" name="mbiemer[]"></td>
+                            <td><input type="text" name="shtet[]"></td>
+                            <td><input type="text" name="qytet[]"></td>
+                            <td><input type="text" name="kafsh[]"></td>
+                            <td><input type="text" name="send[]"></td>
+                            <td><button type="button" id="finishBtn">Finish</button></td>
+                        </tr>
+                    `;
+                    document.getElementById("finishBtn").addEventListener("click", submitGame);
             } else {
                 showModal(data.message);
             }
@@ -352,8 +340,7 @@ function submitGame() {
             console.error(err);
             showModal("Error submitting game.");
         });
-}
-
+    }
 document.getElementById("finishBtn").addEventListener("click", submitGame);
 
 let timerInterval;
@@ -385,7 +372,7 @@ function startTimer() {
             });
 
             if (!allFilled) {
-                showModal("Game Over. Some fields were empty.");
+                showModal("Game Over.");
             } else {
                 submitGame();
             }
@@ -394,8 +381,8 @@ function startTimer() {
 }
 
 startTimerBtn.addEventListener("click", startTimer);
-</script>
 
 
+    </script>
 </body> 
 </html>
