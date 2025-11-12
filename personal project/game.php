@@ -1,5 +1,11 @@
 <?php 
-session_start();
+session_start(); 
+
+if (!isset($_SESSION['user_id'])) {
+    header("Location: login.php");
+    exit;
+}
+
 $images = [     
     "pics/brain.png",     
     "pics/dolphin.png",     
@@ -9,7 +15,8 @@ $images = [
     "pics/raven.png", 
 ];  
 $randomImage = $images[array_rand($images)]; 
-?>  
+
+?>
 
 <!DOCTYPE html> 
 <html lang="sq"> 
@@ -130,6 +137,106 @@ $randomImage = $images[array_rand($images)];
 </head> 
 
 <body>     
+    <!-- Dropdown Menu for Results -->
+<div class="results-dropdown">
+    <button id="resultsBtn">Check Results ▾</button>
+    <div id="resultsContent" class="dropdown-content">
+        <p>Loading results...</p>
+    </div>
+</div>
+
+<style>
+.results-dropdown {
+    position: fixed;
+    top: 10px;
+    right: 10px;
+    z-index: 1000;
+    font-family: Arial, sans-serif;
+}
+
+#resultsBtn {
+    background-color: #0c7230;
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+
+#resultsBtn:hover { background-color: #0c723080; }
+
+.dropdown-content {
+    display: none;
+    position: absolute;
+    right: 0;
+    background-color: rgba(255,255,255,0.95);
+    min-width: 250px;
+    max-height: 300px;
+    overflow-y: auto;
+    border-radius: 8px;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    padding: 10px;
+    margin-top: 5px;
+}
+
+.dropdown-content p {
+    margin: 5px 0;
+    font-size: 0.95rem;
+    color: #222;
+}
+
+.dropdown-content p.user-result {
+    cursor: default;
+    padding: 5px;
+    border-bottom: 1px solid #ccc;
+}
+</style>
+
+<script>
+const resultsBtn = document.getElementById("resultsBtn");
+const resultsContent = document.getElementById("resultsContent");
+
+resultsBtn.addEventListener("click", () => {
+    if (resultsContent.style.display === "block") {
+        resultsContent.style.display = "none";
+        return;
+    }
+
+    resultsContent.style.display = "block";
+    resultsContent.innerHTML = "<p>Loading results...</p>";
+
+    fetch('get_results.php')
+        .then(res => res.json())
+        .then(data => {
+            if (data.length === 0) {
+                resultsContent.innerHTML = "<p>No results available yet.</p>";
+                return;
+            }
+
+            resultsContent.innerHTML = ""; 
+
+            data.forEach(user => {
+                const p = document.createElement("p");
+                p.className = "user-result";
+                p.textContent = `User: ${user.username} | Score: ${user.score} | Time: ${user.time}s`;
+                resultsContent.appendChild(p);
+            });
+        })
+        .catch(err => {
+            console.error(err);
+            resultsContent.innerHTML = "<p>Error fetching results.</p>";
+        });
+});
+
+window.addEventListener("click", (e) => {
+    if (!resultsBtn.contains(e.target) && !resultsContent.contains(e.target)) {
+        resultsContent.style.display = "none";
+    }
+});
+</script>
+
     <section class="section1">
         <img src="<?php echo $randomImage; ?>" alt="Random Image" class="logo">
     </section>
@@ -172,18 +279,18 @@ $randomImage = $images[array_rand($images)];
         </div>
     </div>
 
-    <script>
-        const alphabet = ["A","B","C","Ç","D","DH","E","Ë","F","G","GJ","H","I","J","K","L","LL","M","N","NJ","O","P","Q","R","RR","S","SH","T","TH","U","V","X","XH","Y","Z","ZH"];
-        const letterBox = document.getElementById("letterBox");
-        const timerBox = document.getElementById("timerBox");
-        const startTimerBtn = document.getElementById("startTimerBtn");
+<script>
+const alphabet = ["A","B","C","Ç","D","DH","E","Ë","F","G","GJ","H","I","J","K","L","LL","M","N","NJ","O","P","Q","R","RR","S","SH","T","TH","U","V","X","XH","Y","Z","ZH"];
+const letterBox = document.getElementById("letterBox");
+const timerBox = document.getElementById("timerBox");
+const startTimerBtn = document.getElementById("startTimerBtn");
 
-        function generateLetter() {
-            const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
-            letterBox.textContent = randomLetter;
-        }
+function generateLetter() {
+    const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+    letterBox.textContent = randomLetter;
+}
 
-      function showModal(message) {
+function showModal(message) {
     const modal = document.getElementById("customModal");
     const msg = document.getElementById("modalMessage");
 
@@ -202,65 +309,93 @@ $randomImage = $images[array_rand($images)];
     };
 }
 
+function submitGame() {
+    const inputs = document.querySelectorAll("#gameTable input");
+    let allFilled = true;
+    inputs.forEach(input => { if (input.value.trim() === "") allFilled = false; });
 
-        function submitGame() {
+    if (!allFilled) {
+        showModal("Please fill in all fields before finishing!");
+        return;
+    }
+
+    const formData = new FormData(document.getElementById("gameForm"));
+    fetch('submit_game.php', { method: 'POST', body: formData })
+        .then(res => res.json())
+        .then(data => {
+            if (data.status === 'success') {
+                showModal(data.message);
+
+                // Reset the table for a new game
+                const table = document.getElementById("gameTable");
+                table.innerHTML = `
+                    <tr>
+                        <th>Emer</th><th>Mbiemer</th><th>Shtet</th><th>Qytet</th><th>Kafsh</th><th>Send</th>
+                    </tr>
+                    <tr>
+                        <td><input type="text" name="emer[]"></td>
+                        <td><input type="text" name="mbiemer[]"></td>
+                        <td><input type="text" name="shtet[]"></td>
+                        <td><input type="text" name="qytet[]"></td>
+                        <td><input type="text" name="kafsh[]"></td>
+                        <td><input type="text" name="send[]"></td>
+                        <td><button type="button" id="finishBtn">Finish</button></td>
+                    </tr>
+                `;
+                document.getElementById("finishBtn").addEventListener("click", submitGame);
+
+            } else {
+                showModal(data.message);
+            }
+        })
+        .catch(err => {
+            console.error(err);
+            showModal("Error submitting game.");
+        });
+}
+
+document.getElementById("finishBtn").addEventListener("click", submitGame);
+
+let timerInterval;
+let time = 0;
+
+function updateTimerDisplay() {
+    const minutes = Math.floor(time / 60);
+    const seconds = time % 60;
+    timerBox.textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
+}
+
+function startTimer() {
+    generateLetter();
+    if (timerInterval) clearInterval(timerInterval);
+    time = 0;
+    updateTimerDisplay();
+
+    timerInterval = setInterval(() => {
+        if (time < 60) { 
+            time++;
+            updateTimerDisplay();
+        } else {
+            clearInterval(timerInterval);
+
             const inputs = document.querySelectorAll("#gameTable input");
             let allFilled = true;
-            inputs.forEach(input => { if (input.value.trim() === "") allFilled = false; });
+            inputs.forEach(input => {
+                if (input.value.trim() === "") allFilled = false;
+            });
 
-            if (!allFilled) { showModal("Please fill in all fields before finishing!"); return; }
-
-            const formData = new FormData(document.getElementById("gameForm"));
-            fetch('submit_game.php', {method: 'POST', body: formData})
-            .then(res => res.json())
-            .then(data => {
-                if(data.status === 'success'){
-                    showModal(data.message);
-                    // Reset table
-                    const table = document.getElementById("gameTable");
-                    table.innerHTML = `
-                        <tr>
-                            <th>Emer</th><th>Mbiemer</th><th>Shtet</th><th>Qytet</th><th>Kafsh</th><th>Send</th>
-                        </tr>
-                        <tr>
-                            <td><input type="text" name="emer[]"></td>
-                            <td><input type="text" name="mbiemer[]"></td>
-                            <td><input type="text" name="shtet[]"></td>
-                            <td><input type="text" name="qytet[]"></td>
-                            <td><input type="text" name="kafsh[]"></td>
-                            <td><input type="text" name="send[]"></td>
-                            <td><button type="button" id="finishBtn">Finish</button></td>
-                        </tr>
-                    `;
-                    document.getElementById("finishBtn").addEventListener("click", submitGame);
-                } else { showModal(data.message); }
-            })
-            .catch(err => { console.error(err); showModal("Error submitting game."); });
+            if (!allFilled) {
+                showModal("Game Over. Some fields were empty.");
+            } else {
+                submitGame();
+            }
         }
+    }, 1000);
+}
 
-        document.getElementById("finishBtn").addEventListener("click", submitGame);
+startTimerBtn.addEventListener("click", startTimer);
+</script>
 
-        let timerInterval; let time = 0; 
-        function updateTimerDisplay() {
-            const minutes = Math.floor(time / 60);
-            const seconds = time % 60;
-            timerBox.textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
-        }
-        function startTimer() {
-            generateLetter();
-            if (timerInterval) clearInterval(timerInterval);
-            time = 0; updateTimerDisplay();
-            timerInterval = setInterval(() => {
-                if (time < 60) { 
-                    time++; updateTimerDisplay();
-                } else {
-                    clearInterval(timerInterval);
-                    submitGame(); // auto submit when timer ends
-                }
-            }, 1000);
-        }
 
-        startTimerBtn.addEventListener("click", startTimer);
-    </script>
 </body> 
 </html>

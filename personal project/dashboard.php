@@ -1,7 +1,6 @@
 <?php
 session_start();
 
-// Admin check
 if (!isset($_SESSION['is_admin']) || $_SESSION['is_admin'] != 1) {
     header('Location: login.php'); 
     exit;
@@ -12,13 +11,11 @@ $username = "root";
 $password = "";
 $dbname = "gamee";
 
-// Create connection
 $conn = new mysqli($servername, $username, $password, $dbname);
 if ($conn->connect_error) {
     die("Connection failed: " . $conn->connect_error);
 }
 
-// Fetch all game results
 $result = $conn->query("SELECT emer, mbiemer, shtet, qytet, kafsh, send FROM loja");
 $gameResults = [];
 
@@ -35,8 +32,7 @@ if ($result->num_rows > 0) {
     }
 }
 
-// Fetch users
-$userResult = $conn->query("SELECT username, email FROM users"); // Adjust columns if needed
+$userResult = $conn->query("SELECT username, email FROM users"); 
 $users = [];
 if ($userResult->num_rows > 0) {
     while ($row = $userResult->fetch_assoc()) {
@@ -44,13 +40,20 @@ if ($userResult->num_rows > 0) {
     }
 }
 
-// Stats
+
+$totalUsersQuery = $conn->query("SELECT COUNT(*) AS total FROM users");
+$totalUsers = ($totalUsersQuery && $totalUsersQuery->num_rows > 0) ? $totalUsersQuery->fetch_assoc()['total'] : 0;
+
+$gamesPlayedQuery = $conn->query("SELECT COUNT(*) AS total FROM loja");
+$gamesPlayed = ($gamesPlayedQuery && $gamesPlayedQuery->num_rows > 0) ? $gamesPlayedQuery->fetch_assoc()['total'] : 0;
+
 $stats = [
-    "totalUsers" => count($users),
-    "gamesPlayed" => count($gameResults),
-    "gamesCompleted" => count($gameResults), // assuming all rows are completed
-    "gamesFailed" => 0, // no concept of failed yet
+    "totalUsers" => $totalUsers,
+    "gamesPlayed" => $gamesPlayed,
+    "gamesCompleted" => $gamesPlayed, 
+    "gamesFailed" => 0,
 ];
+
 
 if (isset($_POST['logout'])) {
     session_destroy();
@@ -114,7 +117,6 @@ if (isset($_POST['logout'])) {
 </header>
 
 <div class="container">
-    <!-- Statistics -->
     <div class="card">
         <h2>Statistics</h2>
         <p>Total Users: <strong><?php echo $stats['totalUsers']; ?></strong></p>
@@ -135,31 +137,6 @@ if (isset($_POST['logout'])) {
             <tr>
                 <td><?php echo $user['username']; ?></td>
                 <td><?php echo $user['email']; ?></td>
-            </tr>
-            <?php endforeach; ?>
-        </table>
-    </div>
-
-    <!-- Game Results Table -->
-    <div class="card" style="flex: 2 1 400px;">
-        <h2>All Game Results</h2>
-        <table>
-            <tr>
-                <th>Emer</th>
-                <th>Mbiemer</th>
-                <th>Shtet</th>
-                <th>Qytet</th>
-                <th>Kafsh</th>
-                <th>Send</th>
-            </tr>
-            <?php foreach($gameResults as $game): ?>
-            <tr>
-                <td><?php echo $game['emer']; ?></td>
-                <td><?php echo $game['mbiemer']; ?></td>
-                <td><?php echo $game['shtet']; ?></td>
-                <td><?php echo $game['qytet']; ?></td>
-                <td><?php echo $game['kafsh']; ?></td>
-                <td><?php echo $game['send']; ?></td>
             </tr>
             <?php endforeach; ?>
         </table>
