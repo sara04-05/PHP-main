@@ -130,21 +130,16 @@ $randomImage = $images[array_rand($images)];
 </head> 
 
 <body>     
-    <!-- Dropdown Menu for Results -->
-<div class="results-dropdown">
-    <button id="resultsBtn">Check Results ▾</button>
-    <div id="resultsContent" class="dropdown-content">
-        <p>Loading results...</p>
-    </div>
+<div class="results-btn-container">
+    <button id="resultsBtn">Results</button>
 </div>
 
 <style>
-.results-dropdown {
+.results-btn-container {
     position: fixed;
     top: 10px;
     right: 10px;
     z-index: 1000;
-    font-family: Arial, sans-serif;
 }
 
 #resultsBtn {
@@ -158,74 +153,18 @@ $randomImage = $images[array_rand($images)];
     transition: background-color 0.3s ease;
 }
 
-#resultsBtn:hover { background-color: #0c723080; }
-
-.dropdown-content {
-    display: none;
-    position: absolute;
-    right: 0;
-    background-color: rgba(255,255,255,0.95);
-    min-width: 250px;
-    max-height: 300px;
-    overflow-y: auto;
-    border-radius: 8px;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    padding: 10px;
-    margin-top: 5px;
-}
-
-.dropdown-content p {
-    margin: 5px 0;
-    font-size: 0.95rem;
-    color: #222;
-}
-
-.dropdown-content p.user-result {
-    cursor: default;
-    padding: 5px;
-    border-bottom: 1px solid #ccc;
+#resultsBtn:hover {
+    background-color: #0c723080;
 }
 </style>
 
 <script>
 const resultsBtn = document.getElementById("resultsBtn");
-const resultsContent = document.getElementById("resultsContent");
-
 resultsBtn.addEventListener("click", () => {
-    if (resultsContent.style.display === "block") {
-        resultsContent.style.display = "none";
-        return;
-    }
-
-    resultsContent.style.display = "block";
-    resultsContent.innerHTML = "<p>Loading results...</p>";
-
-    fetch('get_results.php')
-        .then(res => res.json())
-        .then(data => {
-            if (data.length === 0) {
-                resultsContent.innerHTML = "<p>No results available yet.</p>";
-                return;
-            }
-
-            resultsContent.innerHTML = ""; 
-
-            data.forEach(user => {
-                const p = document.createElement("p");
-                p.className = "user-result";
-                p.textContent = `User: ${user.username} | Score: ${user.score} | Time: ${user.time}s`;
-                resultsContent.appendChild(p);
-            });
-        })
-        .catch(err => {
-            console.error(err);
-            resultsContent.innerHTML = "<p>Error fetching results.</p>";
-        });
-});
-
-window.addEventListener("click", (e) => {
-    if (!resultsBtn.contains(e.target) && !resultsContent.contains(e.target)) {
-        resultsContent.style.display = "none";
+    // Show a small modal or alert first
+    const confirmView = confirm("Check your score?");
+    if (confirmView) {
+        window.location.href = "results.php";
     }
 });
 </script>

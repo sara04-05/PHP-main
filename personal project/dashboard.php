@@ -51,7 +51,6 @@ $stats = [
     "totalUsers" => $totalUsers,
     "gamesPlayed" => $gamesPlayed,
     "gamesCompleted" => $gamesPlayed, 
-    "gamesFailed" => 0,
 ];
 
 // Logout
@@ -118,8 +117,7 @@ if (isset($_POST['logout'])) {
         <p>Total Users: <strong><?php echo $stats['totalUsers']; ?></strong></p>
         <p>Games Played: <strong><?php echo $stats['gamesPlayed']; ?></strong></p>
         <p>Games Completed: <strong><?php echo $stats['gamesCompleted']; ?></strong></p>
-        <p>Games Failed: <strong><?php echo $stats['gamesFailed']; ?></strong></p>
-    </div>
+  </div>
 
     <!-- Users Table -->
     <div class="card">
