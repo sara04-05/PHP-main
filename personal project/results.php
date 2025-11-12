@@ -126,7 +126,6 @@ $results = $stmt->fetchAll(PDO::FETCH_ASSOC);
             <th>Qytet</th>
             <th>Kafsh</th>
             <th>Send</th>
-            >
         </tr>
         <?php foreach ($results as $result): ?>
             <tr>

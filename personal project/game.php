@@ -144,6 +144,7 @@ $randomImage = $images[array_rand($images)];
 <body>     
 <div class="results-btn-container">
     <button id="resultsBtn">Results</button>
+    <button id="logoutBtn">Logout</button> <!-- added logout button -->
 </div>
 
 <style>
@@ -152,6 +153,8 @@ $randomImage = $images[array_rand($images)];
     top: 10px;
     right: 10px;
     z-index: 1000;
+    display: flex;              /* allow multiple buttons side-by-side */
+    gap: 8px;                   /* small gap between buttons */
 }
 
 #resultsBtn {
@@ -168,6 +171,20 @@ $randomImage = $images[array_rand($images)];
 #resultsBtn:hover {
     background-color: #0c723080;
 }
+
+#logoutBtn {
+    background-color: #c70000;  /* red logout button to distinguish */
+    color: white;
+    border: none;
+    padding: 10px 15px;
+    border-radius: 6px;
+    cursor: pointer;
+    font-size: 1rem;
+    transition: background-color 0.3s ease;
+}
+#logoutBtn:hover {
+    background-color: #ff0000;
+}
 </style>
 
 <script>
@@ -177,6 +194,15 @@ resultsBtn.addEventListener("click", () => {
     const confirmView = confirm("Check your score?");
     if (confirmView) {
         window.location.href = "results.php";
+    }
+});
+
+const logoutBtn = document.getElementById("logoutBtn"); // added handler
+logoutBtn.addEventListener("click", () => {
+    const confirmLogout = confirm("Are you sure you want to log out?");
+    if (confirmLogout) {
+        // navigate to logout endpoint that will destroy the session
+        window.location.href = "logout.php";
     }
 });
 </script>

@@ -3,7 +3,7 @@ session_start();
 
 header('Content-Type: application/json');
 
-if(!isset($_SESSION['user_id'])) {
+if(!isset($_SESSION['id'])) {
     echo json_encode(['status'=>'error','message'=>'login_required']);
     exit;
 }
@@ -15,7 +15,7 @@ if(!isset($_POST['score'], $_POST['time'])) {
 
 $score = (int)$_POST['score'];
 $time = (int)$_POST['time'];
-$user_id = (int)$_SESSION['user_id'];
+$user_id = (int)$_SESSION['id'];
 
 try {
     $pdo = new PDO("mysql:host=localhost;dbname=gamee;charset=utf8", "root", "");
