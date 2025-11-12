@@ -94,6 +94,14 @@ $randomImage = $images[array_rand($images)];
             color: #f1f1f1;
             font-size: 0.9rem;
         }
+        .game-table input.invalid {
+            border-color: #ff3333;
+            background-color: rgba(255, 0, 0, 0.2);
+        }
+        .game-table input.valid {
+            border-color: #00cc00;
+            background-color: rgba(0, 128, 0, 0.2);
+        }
         button {
             padding: 8px;
             background-color: #0c7230ff;
@@ -104,7 +112,11 @@ $randomImage = $images[array_rand($images)];
             cursor: pointer;
             transition: background-color 0.3s ease;
         }
-        button:hover {background-color: #0c723080;}
+        button:hover:not(:disabled) {background-color: #0c723080;}
+        button:disabled {
+            background-color: #999;
+            cursor: not-allowed;
+        }
         .modal {
             display: none;
             position: fixed;
@@ -197,7 +209,7 @@ resultsBtn.addEventListener("click", () => {
                     <td><input type="text" name="qytet[]"></td>                     
                     <td><input type="text" name="kafsh[]"></td>                     
                     <td><input type="text" name="send[]"></td>                     
-                    <td><button type="button" id="finishBtn">Finish</button></td>                 
+                    <td><button type="button" id="finishBtn" disabled>Finish</button></td>                 
                 </tr>             
             </table>         
         </form>     
@@ -216,38 +228,78 @@ resultsBtn.addEventListener("click", () => {
         const letterBox = document.getElementById("letterBox");
         const timerBox = document.getElementById("timerBox");
         const startTimerBtn = document.getElementById("startTimerBtn");
+        const finishBtn = document.getElementById("finishBtn");
+        let currentLetter = "";
 
         function generateLetter() {
             const randomLetter = alphabet[Math.floor(Math.random() * alphabet.length)];
+            currentLetter = randomLetter;
             letterBox.textContent = randomLetter;
         }
 
-      function showModal(message) {
-    const modal = document.getElementById("customModal");
-    const msg = document.getElementById("modalMessage");
+        function validateInputs() {
+            const inputs = document.querySelectorAll("#gameTable input");
+            let allValid = true;
 
-    if (message === "login_required") {
-        msg.textContent = "You must be logged in to submit a game.";
-    } else {
-        msg.textContent = message;
-    }
+            inputs.forEach(input => {
+                const value = input.value.trim();
+                
+                if (value === "") {
+                    input.classList.remove('valid');
+                    input.classList.remove('invalid');
+                    allValid = false;
+                } else if (value.toUpperCase().startsWith(currentLetter.toUpperCase())) {
+                    input.classList.add('valid');
+                    input.classList.remove('invalid');
+                } else {
+                    input.classList.add('invalid');
+                    input.classList.remove('valid');
+                    allValid = false;
+                }
+            });
 
-    modal.style.display = "flex";
-    document.getElementById("closeModal").onclick = () => {
-        modal.style.display = "none";
-        if (message === "login_required") {
-            window.location.href = "login.php";
+            finishBtn.disabled = !allValid;
+            return allValid;
         }
-    };
-}
 
+        document.querySelectorAll("#gameTable input").forEach(input => {
+            input.addEventListener("input", validateInputs);
+        });
+
+        function showModal(message) {
+            const modal = document.getElementById("customModal");
+            const msg = document.getElementById("modalMessage");
+
+            if (message === "login_required") {
+                msg.textContent = "You must be logged in to submit a game.";
+            } else {
+                msg.textContent = message;
+            }
+
+            modal.style.display = "flex";
+            document.getElementById("closeModal").onclick = () => {
+                modal.style.display = "none";
+                if (message === "login_required") {
+                    window.location.href = "login.php";
+                }
+            };
+        }
 
         function submitGame() {
             const inputs = document.querySelectorAll("#gameTable input");
-            let allFilled = true;
-            inputs.forEach(input => { if (input.value.trim() === "") allFilled = false; });
+            let allValid = true;
 
-            if (!allFilled) { showModal("Please fill in all fields before finishing!"); return; }
+            inputs.forEach(input => {
+                const value = input.value.trim();
+                if (value === "" || !value.toUpperCase().startsWith(currentLetter.toUpperCase())) {
+                    allValid = false;
+                }
+            });
+
+            if (!allValid) {
+                showModal("All fields must be filled and start with the letter: " + currentLetter);
+                return;
+            }
 
             const formData = new FormData(document.getElementById("gameForm"));
             fetch('submit_game.php', {method: 'POST', body: formData})
@@ -267,10 +319,14 @@ resultsBtn.addEventListener("click", () => {
                             <td><input type="text" name="qytet[]"></td>
                             <td><input type="text" name="kafsh[]"></td>
                             <td><input type="text" name="send[]"></td>
-                            <td><button type="button" id="finishBtn">Finish</button></td>
+                            <td><button type="button" id="finishBtn" disabled>Finish</button></td>
                         </tr>
                     `;
+                    document.querySelectorAll("#gameTable input").forEach(input => {
+                        input.addEventListener("input", validateInputs);
+                    });
                     document.getElementById("finishBtn").addEventListener("click", submitGame);
+                    validateInputs();
             } else {
                 showModal(data.message);
             }
@@ -279,49 +335,52 @@ resultsBtn.addEventListener("click", () => {
             console.error(err);
             showModal("Error submitting game.");
         });
-    }
-document.getElementById("finishBtn").addEventListener("click", submitGame);
-
-let timerInterval;
-let time = 0;
-
-function updateTimerDisplay() {
-    const minutes = Math.floor(time / 60);
-    const seconds = time % 60;
-    timerBox.textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
-}
-
-function startTimer() {
-    generateLetter();
-    if (timerInterval) clearInterval(timerInterval);
-    time = 0;
-    updateTimerDisplay();
-
-    timerInterval = setInterval(() => {
-        if (time < 60) { 
-            time++;
-            updateTimerDisplay();
-        } else {
-            clearInterval(timerInterval);
-
-            const inputs = document.querySelectorAll("#gameTable input");
-            let allFilled = true;
-            inputs.forEach(input => {
-                if (input.value.trim() === "") allFilled = false;
-            });
-
-            if (!allFilled) {
-                showModal("Game Over.");
-            } else {
-                submitGame();
-            }
         }
-    }, 1000);
-}
 
-startTimerBtn.addEventListener("click", startTimer);
+        finishBtn.addEventListener("click", submitGame);
 
+        let timerInterval;
+        let time = 0;
 
+        function updateTimerDisplay() {
+            const minutes = Math.floor(time / 60);
+            const seconds = time % 60;
+            timerBox.textContent = `${minutes}:${seconds.toString().padStart(2,'0')}`;
+        }
+
+        function startTimer() {
+            generateLetter();
+            validateInputs();
+            if (timerInterval) clearInterval(timerInterval);
+            time = 0;
+            updateTimerDisplay();
+
+            timerInterval = setInterval(() => {
+                if (time < 60) { 
+                    time++;
+                    updateTimerDisplay();
+                } else {
+                    clearInterval(timerInterval);
+
+                    const inputs = document.querySelectorAll("#gameTable input");
+                    let allValid = true;
+                    inputs.forEach(input => {
+                        const value = input.value.trim();
+                        if (value === "" || !value.toUpperCase().startsWith(currentLetter.toUpperCase())) {
+                            allValid = false;
+                        }
+                    });
+
+                    if (!allValid) {
+                        showModal("Game Over. Not all fields start with letter: " + currentLetter);
+                    } else {
+                        submitGame();
+                    }
+                }
+            }, 1000);
+        }
+
+        startTimerBtn.addEventListener("click", startTimer);
     </script>
 </body> 
 </html>
